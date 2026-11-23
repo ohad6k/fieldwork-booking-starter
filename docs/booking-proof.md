@@ -20,19 +20,18 @@ supabase stop
 
 The pgTAP suite checks the last seat, a second request against a full session, cancellation, rescheduling and database access. The tests run sequentially in one transaction and roll back their rows. The recorded concurrency checks below cover interleaved requests. [Test cases](../supabase/tests/workshop.test.sql) · [Supabase testing guide](https://supabase.com/docs/guides/local-development/testing/overview)
 
-## Read the recorded concurrency checks
+## Replay two guests booking the last seat
 
-The video and JSON summarize recorded runs from an engineering build. The JSON retains selected results and source digests. Reproducing those exact schedules requires the engineering build and full input reports. To reproduce the Fieldwork database contract with the files in this starter, use the pgTAP command above. A *tested order* is a sequence in which the engine let operations from two requests proceed. Each of the two checks in the table exercised six orders. [24-second walkthrough](booking-check.mp4) · [Selected output and revision hashes](booking-check.json)
+The [last-seat rule](../supabase/tests/last-seat.rule.json) applies this starter’s migrations to a disposable local PostgreSQL instance using PGlite. It seeds a two-seat workshop with one of its seats already taken. Two guest inserts run in separate transactions. After both finish, the test checks that the reservation count matches the stored count and stays within capacity. The pgTAP suite separately checks that a single valid reservation succeeds.
 
-| Database under test | What the recorded engine run found |
-| --- | --- |
-| Earlier workshop example | The engine inferred the capacity conflict from the schema. Four of six orders broke capacity in each of its two checks. Both checks pointed to one distinct finding. |
-| Advisory-lock candidate | The earlier run also tried an advisory lock per call. The engine marked this candidate proven across six orders for the tested case. |
-| Corrected historical example | A separate revision locked the capacity row. Its two checks held across all six tested orders apiece. |
-| Shipped Fieldwork migration | Fieldwork uses a conditional update to claim the seat. An engineering build ran both checks against this migration. All six tested orders held for each. |
+With Node.js 24 from the repository root:
+
+```sh
+npm run check:race
+```
+
+The command uses the published VibeRaven CLI pinned in `package.json`. It tests bounded Read Committed schedules over synthetic rows. The exit status and reported order counts describe this rule. Browser behavior and hosted Supabase settings have separate checks.
 
 ## Opt into migration review
 
-If you want an advisory review on migration pull requests, open your fork’s **Settings → Secrets and variables → Actions → Variables**. Set the repository variable `FIELDWORK_MIGRATION_REVIEW` to `true`. The job runs the same commands available locally, `npm run check` and `npm run check:race`, using the published VibeRaven CLI pinned in `package.json`. On the shipped migrations, version 1.13.0 loaded the schema and returned **incomplete** with zero inferred checks. The result is visible in the summary. The pgTAP job verifies the contract regardless of the advisory setting. [Commands and pinned version](../package.json) · [Workflow](../.github/workflows/migrations.yml)
-
-The engine revision identifies the VibeRaven build. The migration SHA-256 identifies the exact Fieldwork SQL tested.
+If you want the advisory review on migration pull requests, open your fork’s **Settings → Secrets and variables → Actions → Variables**. Set `FIELDWORK_MIGRATION_REVIEW` to `true`. The job runs `npm run check` for static review and `npm run check:race` for the last-seat replay. Both commands are available locally. The pgTAP job verifies the SQL contract independently. [Commands and pinned version](../package.json) · [Workflow](../.github/workflows/migrations.yml)

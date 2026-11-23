@@ -1,0 +1,11 @@
+{
+  "rule": "Two guests may book at most one remaining workshop seat",
+  "setup": "INSERT INTO public.workshops (slug, capacity) VALUES ('capacity-check', 2); INSERT INTO public.workshop_reservations (workshop_slug, booking_id) VALUES ('capacity-check', 'existing');",
+  "requests": [
+    { "statements": ["INSERT INTO public.workshop_reservations (workshop_slug, booking_id) VALUES ('capacity-check', 'guest-a')"] },
+    { "statements": ["INSERT INTO public.workshop_reservations (workshop_slug, booking_id) VALUES ('capacity-check', 'guest-b')"] }
+  ],
+  "invariant": "SELECT reserved <= capacity AND reserved = (SELECT count(*) FROM public.workshop_reservations WHERE workshop_slug = 'capacity-check') FROM public.workshops WHERE slug = 'capacity-check'",
+  "isolation": ["read committed"],
+  "notes": "Disposable PostgreSQL, synthetic tickets, and bounded SQL schedules. The app and hosted configuration are outside this replay."
+}

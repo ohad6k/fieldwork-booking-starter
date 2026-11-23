@@ -47,7 +47,7 @@ For display, set `STUDIO_LOCALE` and `STUDIO_TIME_ZONE` in [programme.mjs](lib/p
 
 ## Check the last seat
 
-Run `bash scripts/test-db.sh` with Docker and Bash. The pgTAP suite checks that a full session rejects a second reservation, cancellation restores the seat and rescheduling preserves historical tickets. CI runs it on migration changes. [Database test setup and recorded results](docs/booking-proof.md)
+Run `bash scripts/test-db.sh` with Docker and Bash. The pgTAP suite checks that a full session rejects a second reservation, cancellation restores the seat and rescheduling preserves historical tickets. CI runs it on migration changes. `npm run check:race` replays two guests attempting the same last seat on a disposable local database. [Database and concurrency test setup](docs/booking-proof.md)
 
 Run `npm test` for schedule and London time-label tests and `npm run build` for the production build.
 

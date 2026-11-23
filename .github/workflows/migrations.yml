@@ -37,13 +37,13 @@ jobs:
         id: repository
         continue-on-error: true
         run: npm run check
-      - name: Check migration behavior
+      - name: Replay the last seat
         run: |
           status=0
           npm run check:race || status=$?
           case "$status" in
-            0) outcome="Completed. Inspect the tested scope in the log." ;;
-            2) outcome="Incomplete. Read the coverage reason in the log. The pinned version infers no checks for the shipped schema." ;;
+            0) outcome="Completed. Read the tested orders and scope in the log." ;;
+            2) outcome="Incomplete. Read the coverage reason in the log." ;;
             *) outcome="Review required. Read the finding or error in the log." ;;
           esac
           echo "### VibeRaven migration review" >> "$GITHUB_STEP_SUMMARY"

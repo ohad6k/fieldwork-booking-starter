@@ -11,7 +11,7 @@
     "start": "next start",
     "test": "node --test",
     "check": "npx -y viberaven@1.13.0 check",
-    "check:race": "npx -y viberaven@1.13.0 race --auto"
+    "check:race": "npx -y viberaven@1.13.0 race . --spec supabase/tests/last-seat.rule.json"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.119.2",
