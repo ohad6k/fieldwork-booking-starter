@@ -49,9 +49,13 @@ For display, edit the `STUDIO_LOCALE` and `STUDIO_TIME_ZONE` constants in [progr
 
 ## Check the last seat
 
-Run `bash scripts/test-db.sh` with Docker and Bash. The pgTAP suite checks that a full session rejects a second reservation, cancellation restores the seat and rescheduling preserves historical tickets. CI runs it on migration changes. The guide also includes an optional replay using the template author’s VibeRaven CLI. [Database and concurrency test setup](docs/booking-proof.md)
+Run `bash scripts/test-db.sh` with Docker and Bash. The pgTAP suite checks that a full session rejects a second reservation, cancellation restores the seat and rescheduling preserves historical tickets. CI runs it on migration changes. [Database test setup](docs/booking-proof.md)
 
 Run `npm run check` for formatting and SQL seed parity, `npm test` for schedule and London time-label tests, and `npm run build` for the production build.
+
+## Check before you launch
+
+Run `npx -y viberaven check` from the repository root. It reads the migrations and code on your machine, needs no account, and lists launch gaps such as RLS, Data API grants and undocumented environment variables. Re-run it after you change the schema or add a table.
 
 ## License
 
