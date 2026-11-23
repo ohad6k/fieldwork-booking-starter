@@ -36,11 +36,11 @@ jobs:
       - name: Check the repository
         id: repository
         continue-on-error: true
-        run: npm run check
+        run: npx -y viberaven@1.13.0 check
       - name: Replay the last seat
         run: |
           status=0
-          npm run check:race || status=$?
+          npx -y viberaven@1.13.0 race . --spec supabase/tests/last-seat.rule.json || status=$?
           case "$status" in
             0) outcome="Completed. Read the tested orders and scope in the log." ;;
             2) outcome="Incomplete. Read the coverage reason in the log." ;;

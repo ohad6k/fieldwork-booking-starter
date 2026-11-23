@@ -27,7 +27,9 @@ Open [localhost:3000](http://localhost:3000). No environment values are required
 
 ## Make the programme yours
 
-Fieldwork lists one upcoming date per workshop and features the first class in the [catalogue](lib/programme.mjs). Edit the catalogue for the browser demo and the [SQL seed](supabase/seed.sql) for connected mode. Update the slug, capacity, sample reservations and schedule offset in both places when you want matching starting programmes. Offsets are counted from Saturday at 00:00 UTC. A null database offset makes a workshop a one-off. Add workshop artwork at `public/studies/<slug>.webp` and thumbnails at `public/studies/thumbs/<slug>-96.webp` and `<slug>-192.webp`.
+Fieldwork lists one upcoming date per workshop and features the first class in the [catalogue](lib/programme.mjs). Edit titles, capacity, sample reservations and schedule offsets there. Run `npm run seed` to regenerate the [SQL seed](supabase/seed.sql) for a new connected database. Offsets are counted from Saturday at 00:00 UTC. Add workshop artwork at `public/studies/<slug>.webp` and thumbnails at `public/studies/thumbs/<slug>-96.webp` and `<slug>-192.webp`.
+
+The [programme views](app/studio-programme.jsx) render the studio header, featured workshop and programme rows. The [booking dialog](app/booking-dialog.jsx) renders availability, confirmation and cancellation steps. [Studio](app/studio.jsx) holds the booking state and handles ticket storage.
 
 ## Share availability with Supabase
 
@@ -41,15 +43,15 @@ Fieldwork lists one upcoming date per workshop and features the first class in t
 
 3. Restart `npm run dev` locally or redeploy the hosted project. **Studio bookings** identifies shared availability. Guests manage their tickets in the browser where they booked. The booking endpoint accepts guests without sign-in or built-in rate limits. For a public studio, you can rate-limit requests to `/api/booking` in Vercel Firewall. To enforce a per-person allowance, require sign-in. [Vercel rate limiting](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting) · [Supabase Auth](https://supabase.com/docs/guides/auth)
 
-After a recurring class closes, run [reschedule.sql](supabase/reschedule.sql) to schedule its next date from its stored offset. Past tickets keep their dates. You can automate this step with [Supabase Cron](https://supabase.com/docs/guides/cron).
+After a recurring class closes, run [reschedule.sql](supabase/reschedule.sql) to schedule its next date. To schedule the same rollover every five minutes, enable Supabase Cron and run [cron.sql](supabase/cron.sql) in the SQL Editor. Past tickets and one-off classes keep their dates. [Supabase Cron setup](https://supabase.com/docs/guides/cron/quickstart)
 
-For display, set `STUDIO_LOCALE` and `STUDIO_TIME_ZONE` in [programme.mjs](lib/programme.mjs). The defaults are `en-GB` and `Europe/London`. The schedule stays anchored in UTC, so London displays a class one hour later during British Summer Time.
+For display, edit the `STUDIO_LOCALE` and `STUDIO_TIME_ZONE` constants in [programme.mjs](lib/programme.mjs). The defaults are `en-GB` and `Europe/London`. The schedule stays anchored in UTC, so London displays a class one hour later during British Summer Time.
 
 ## Check the last seat
 
-Run `bash scripts/test-db.sh` with Docker and Bash. The pgTAP suite checks that a full session rejects a second reservation, cancellation restores the seat and rescheduling preserves historical tickets. CI runs it on migration changes. `npm run check:race` replays two guests attempting the same last seat on a disposable local database. [Database and concurrency test setup](docs/booking-proof.md)
+Run `bash scripts/test-db.sh` with Docker and Bash. The pgTAP suite checks that a full session rejects a second reservation, cancellation restores the seat and rescheduling preserves historical tickets. CI runs it on migration changes. The guide also includes an optional replay using the template author’s VibeRaven CLI. [Database and concurrency test setup](docs/booking-proof.md)
 
-Run `npm test` for schedule and London time-label tests and `npm run build` for the production build.
+Run `npm run check` for formatting and SQL seed parity, `npm test` for schedule and London time-label tests, and `npm run build` for the production build.
 
 ## License
 

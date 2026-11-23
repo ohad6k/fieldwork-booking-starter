@@ -10,13 +10,18 @@
     "build": "next build",
     "start": "next start",
     "test": "node --test",
-    "check": "npx -y viberaven@1.13.0 check",
-    "check:race": "npx -y viberaven@1.13.0 race . --spec supabase/tests/last-seat.rule.json"
+    "check": "npm run format:check && npm run seed:check",
+    "format:check": "prettier --check \"app/**/*.{js,jsx,css}\" \"lib/*.{mjs,js}\" \"tests/*.mjs\" scripts/seed.mjs",
+    "seed": "node scripts/seed.mjs",
+    "seed:check": "node scripts/seed.mjs --check"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.119.2",
     "next": "16.4.6",
     "react": "19.3.1",
     "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "prettier": "3.10.1"
   }
 }

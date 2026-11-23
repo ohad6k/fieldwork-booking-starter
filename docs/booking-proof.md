@@ -18,7 +18,7 @@ supabase test db
 supabase stop
 ```
 
-The pgTAP suite checks the last seat, a second request against a full session, cancellation, rescheduling and database access. The tests run sequentially in one transaction and roll back their rows. The recorded concurrency checks below cover interleaved requests. [Test cases](../supabase/tests/workshop.test.sql) · [Supabase testing guide](https://supabase.com/docs/guides/local-development/testing/overview)
+The pgTAP suite checks the last seat, a second request against a full session, cancellation, rescheduling and database access. The tests run sequentially in one transaction and roll back their rows. [Test cases](../supabase/tests/workshop.test.sql) · [Supabase testing guide](https://supabase.com/docs/guides/local-development/testing/overview)
 
 ## Replay two guests booking the last seat
 
@@ -27,11 +27,11 @@ The [last-seat rule](../supabase/tests/last-seat.rule.json) applies this starter
 With Node.js 24 from the repository root:
 
 ```sh
-npm run check:race
+npx -y viberaven@1.13.0 race . --spec supabase/tests/last-seat.rule.json
 ```
 
-The command uses the published VibeRaven CLI pinned in `package.json`. It tests bounded Read Committed schedules over synthetic rows. The exit status and reported order counts describe this rule. Browser behavior and hosted Supabase settings have separate checks.
+This optional command uses the published release of VibeRaven, a CLI maintained by the template author. It tests bounded Read Committed schedules over synthetic rows. The exit status and reported order counts describe this rule. Browser behavior and hosted Supabase settings have separate checks.
 
 ## Opt into migration review
 
-If you want the advisory review on migration pull requests, open your fork’s **Settings → Secrets and variables → Actions → Variables**. Set `FIELDWORK_MIGRATION_REVIEW` to `true`. The job runs `npm run check` for static review and `npm run check:race` for the last-seat replay. Both commands are available locally. The pgTAP job verifies the SQL contract independently. [Commands and pinned version](../package.json) · [Workflow](../.github/workflows/migrations.yml)
+If you want the advisory review on migration pull requests, open your fork’s **Settings → Secrets and variables → Actions → Variables**. Set `FIELDWORK_MIGRATION_REVIEW` to `true`. The job runs a static VibeRaven review and the last-seat replay above. The pgTAP job verifies the SQL contract independently. [Commands and pinned version](../.github/workflows/migrations.yml)
