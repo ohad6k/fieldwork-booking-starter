@@ -4,17 +4,17 @@ A ready-to-book programme for a paper, print or textile studio. Guests choose a 
 
 [Try the live demo](https://fieldwork-studio-gallery-w15.vercel.app) · [See the mobile ticket](docs/images/ticket-390.png)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fohad6k%2Ffieldwork-booking-starter&project-name=fieldwork-booking-starter&repository-name=fieldwork-booking-starter)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fohad6k%2Ffieldwork-booking-starter&project-name=fieldwork-booking-starter&repository-name=fieldwork-booking-starter&demo-title=Fieldwork%20Studio&demo-description=Browse%20workshops%2C%20book%20a%20seat%20and%20manage%20your%20ticket.&demo-url=https%3A%2F%2Ffieldwork-studio-gallery-w15.vercel.app&demo-image=https%3A%2F%2Fraw.githubusercontent.com%2Fohad6k%2Ffieldwork-booking-starter%2Fmain%2Fdocs%2Fimages%2Ftemplate-preview.png)
 
-![Fieldwork Studio’s live workshop programme with three dated classes and their remaining seats](docs/images/programme-1440.png)
+![Fieldwork Studio’s workshop programme with three dated classes and their remaining seats](docs/images/template-preview.png)
 
 Next.js 16 App Router, React 19 and vanilla CSS. Guest booking uses browser storage by default. Supabase adds a transactional PostgreSQL seat guard.
 
-[Reservation screen](docs/images/reserve-1440.png) · [Mobile programme](docs/images/mobile-workshops.png)
+[Desktop programme](docs/images/programme-1440.png) · [Reservation screen](docs/images/reserve-1440.png) · [Mobile programme](docs/images/mobile-workshops.png)
 
 ## Book your first seat
 
-In the live demo, choose **Reserve a seat → Confirm reservation** under *Folded forms*. Reload, open **My tickets**, and select the workshop. **Cancel reservation → Release seat** returns the seat. The demo stores tickets in the browser.
+To try booking, open *Folded forms* and choose **Confirm reservation**. Reload, open **My tickets**, and select the workshop. **Cancel reservation → Release seat** returns the seat. The demo stores tickets in the browser.
 
 To run your own copy, use Node.js 24 in the repository root.
 
@@ -27,9 +27,9 @@ Open [localhost:3000](http://localhost:3000). No environment values are required
 
 ## Make the programme yours
 
-Fieldwork lists one upcoming date per workshop and features the first class in the [catalogue](lib/programme.mjs). Edit titles, capacity, sample reservations and schedule offsets there. Run `npm run seed` to regenerate the [SQL seed](supabase/seed.sql) for a new connected database. Offsets are counted from Saturday at 00:00 UTC. Add workshop artwork at `public/studies/<slug>.webp` and thumbnails at `public/studies/thumbs/<slug>-96.webp` and `<slug>-192.webp`.
+Fieldwork lists one upcoming date per workshop in chronological order. Edit titles, capacity, sample reservations and schedule offsets in the [catalogue](lib/programme.mjs). Run `npm run seed` to regenerate the [SQL seed](supabase/seed.sql) for a new connected database. Offsets are counted from Saturday at 00:00 UTC. Add workshop artwork at `public/studies/<slug>.webp` and describe it in the catalogue's `alt` field.
 
-The [programme views](app/studio-programme.jsx) render the studio header, featured workshop and programme rows. The [booking dialog](app/booking-dialog.jsx) renders availability, confirmation and cancellation steps. [Studio](app/studio.jsx) holds the booking state and handles ticket storage.
+The [programme views](app/studio-programme.jsx) render the studio header and workshop cards. The [booking dialog](app/booking-dialog.jsx) renders availability, confirmation and cancellation steps. [Studio](app/studio.jsx) holds the booking state and handles ticket storage. The [stylesheet](app/style.css) follows the visitor's light or dark preference.
 
 ## Share availability with Supabase
 
@@ -41,7 +41,7 @@ The [programme views](app/studio-programme.jsx) render the studio header, featur
    SUPABASE_SECRET_KEY=<your server secret>
    ```
 
-3. Restart `npm run dev` locally or redeploy the hosted project. **Studio bookings** identifies shared availability. Guests manage their tickets in the browser where they booked. The booking endpoint accepts guests without sign-in or built-in rate limits. For a public studio, you can rate-limit requests to `/api/booking` in Vercel Firewall. To enforce a per-person allowance, require sign-in. [Vercel rate limiting](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting) · [Supabase Auth](https://supabase.com/docs/guides/auth)
+3. Restart `npm run dev` locally or redeploy the hosted project. Guests share the same workshop availability and manage their tickets in the browser where they booked. The booking endpoint accepts guests without sign-in or built-in rate limits. For a public studio, you can rate-limit requests to `/api/booking` in Vercel Firewall. To enforce a per-person allowance, require sign-in. [Vercel rate limiting](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting) · [Supabase Auth](https://supabase.com/docs/guides/auth)
 
 After a recurring class closes, run [reschedule.sql](supabase/reschedule.sql) to schedule its next date. To schedule the same rollover every five minutes, enable Supabase Cron and run [cron.sql](supabase/cron.sql) in the SQL Editor. Past tickets and one-off classes keep their dates. [Supabase Cron setup](https://supabase.com/docs/guides/cron/quickstart)
 
@@ -55,4 +55,4 @@ Run `npm run check` for formatting and SQL seed parity, `npm test` for schedule 
 
 ## License
 
-[MIT](LICENSE). Font licenses accompany [Schibsted Grotesk](public/fonts/OFL-Schibsted.txt) and [IBM Plex Mono](public/fonts/OFL-IBM-Plex-Mono.txt).
+[MIT](LICENSE). Geist is distributed under the [SIL Open Font License](public/fonts/OFL-Geist.txt).
