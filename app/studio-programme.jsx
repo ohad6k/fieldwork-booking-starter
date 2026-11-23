@@ -1,34 +1,25 @@
 import { scheduleLabel, timeLabel } from '../lib/programme.mjs';
 import { Icon, Mark } from './studio-icons';
 
-function SeatLabel({ state }) {
-  return (
-    <span className={'seat-label' + (state.open ? '' : ' closed')}>
-      <i aria-hidden="true" />
-      {state.label}
-    </span>
-  );
-}
-
 export function StudioHeader({ ticketCount, onTickets }) {
   return (
-    <header className="topbar">
+    <header className="topbar" id="top">
       <div className="wrap bar-inner">
         <a href="#top" className="brand" aria-label="Fieldwork Studio home">
-          <Mark />
-          Fieldwork<span className="brand-studio">Studio</span>
+          <span className="brand-mark">
+            <Mark />
+          </span>
+          Fieldwork Studio
         </a>
         <nav aria-label="Main">
-          <a href="#programme" className="workshop-link">
+          <a href="#programme" className="workshop-link" aria-current="page">
             Workshops
           </a>
           <button
             className="tickets-nav"
             aria-label={
               ticketCount
-                ? 'My tickets, ' +
-                  ticketCount +
-                  (ticketCount === 1 ? ' ticket' : ' tickets')
+                ? `My tickets, ${ticketCount} ${ticketCount === 1 ? 'ticket' : 'tickets'}`
                 : 'My tickets'
             }
             onClick={onTickets}
@@ -47,87 +38,55 @@ export function StudioHeader({ ticketCount, onTickets }) {
   );
 }
 
-export function FeaturedWorkshop({ featured, seatState, action }) {
-  return (
-    <section className="hero" aria-labelledby="featured-title">
-      <div className="hero-copy">
-        <p className="eyebrow">
-          <span className="short-line" />
-          Featured workshop
-        </p>
-        <h1 id="featured-title">{featured.title}</h1>
-        <p className="lead">{featured.summary || featured.description}</p>
-        <div className="session-line">
-          <span>{featured.discipline} studio</span>
-          <span>
-            <Icon name="clock" />
-            {featured.duration} min
-          </span>
-        </div>
-        <div className="action-line">
-          {action}
-          <SeatLabel state={seatState} />
-        </div>
-      </div>
-      <figure className="cover">
-        <img
-          className="cover-art"
-          src={'/studies/' + featured.slug + '.webp'}
-          alt={featured.alt}
-          width="1280"
-          height="880"
-          fetchPriority="high"
-        />
-        <figcaption>
-          <span>Study {featured.number}</span>
-          <span>{featured.technique}</span>
-        </figcaption>
-      </figure>
-    </section>
-  );
-}
+export function WorkshopCard({ workshop, session, seats, ticket, onChoose }) {
+  const action = ticket?.confirmed
+    ? 'View ticket'
+    : ticket
+      ? 'Resume'
+      : seats.open
+        ? 'Reserve'
+        : 'Details';
 
-export function WorkshopRow({
-  workshop: w,
-  session,
-  seatState,
-  action,
-  onChoose,
-}) {
   return (
-    <article className="row">
+    <article className="workshop-card" aria-labelledby={workshop.slug}>
       <img
-        src={'/studies/' + w.slug + '.webp'}
-        srcSet={`/studies/thumbs/${w.slug}-96.webp 96w, /studies/thumbs/${w.slug}-192.webp 192w`}
-        sizes="(max-width: 700px) 64px, (max-width: 959px) 76px, 92px"
-        onError={(e) => e.currentTarget.removeAttribute('srcset')}
+        className="workshop-photo"
+        src={`/studies/${workshop.slug}.webp`}
         alt=""
-        width="92"
-        height="65"
-        loading="lazy"
+        width="960"
+        height="560"
       />
-      <div className="row-name">
-        <p className="discipline">{w.discipline}</p>
-        <h3>
+      <div className="workshop-info">
+        <div className="session">
           {session ? (
-            <button onClick={() => onChoose(session)}>{w.title}</button>
+            <time dateTime={session.starts_at}>
+              <strong>{scheduleLabel(session.starts_at, 'short')}</strong>
+              <span>
+                {timeLabel(session.starts_at)} · {workshop.duration} min
+              </span>
+            </time>
           ) : (
-            w.title
+            <span>{workshop.discipline} workshop</span>
           )}
-        </h3>
+        </div>
+        <h3 id={workshop.slug}>{workshop.title}</h3>
+        <p>{workshop.summary || workshop.description}</p>
       </div>
-      <div className="row-time">
-        {session && (
-          <>
-            <strong>{scheduleLabel(session.starts_at, 'short')}</strong>
-            <span>
-              {timeLabel(session.starts_at)} · {w.duration} min
-            </span>
-          </>
-        )}
+      <div className="workshop-action">
+        <span className="seat-label" data-highlight={seats.last || undefined}>
+          <span aria-hidden="true" className="seat-dot" />
+          {seats.label}
+        </span>
+        <button
+          className={seats.open && !ticket ? 'primary' : 'secondary'}
+          disabled={!session}
+          onClick={() => onChoose(session)}
+          aria-label={`${action} ${workshop.title}`}
+        >
+          {action}
+          <Icon name="arrow" />
+        </button>
       </div>
-      <SeatLabel state={seatState} />
-      {action}
     </article>
   );
 }

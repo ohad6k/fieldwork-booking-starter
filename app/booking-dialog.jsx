@@ -120,8 +120,8 @@ function SessionStep({
         <div className="dialog-figure">
           <img
             src={'/studies/' + workshop.slug + '.webp'}
-            width="1280"
-            height="880"
+            width="960"
+            height="560"
             alt={workshop.alt}
           />
         </div>

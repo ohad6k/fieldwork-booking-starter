@@ -3,12 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { programme } from '../lib/programme.mjs';
 import { BookingDialog } from './booking-dialog';
-import { Icon, Mark } from './studio-icons';
-import {
-  FeaturedWorkshop,
-  StudioHeader,
-  WorkshopRow,
-} from './studio-programme';
+import { Icon } from './studio-icons';
+import { StudioHeader, WorkshopCard } from './studio-programme';
 
 function storageKey(scope) {
   return 'fieldwork.ticket.v1/' + scope + '/';
@@ -51,6 +47,7 @@ function availability(session, local, ticket) {
   if (ticket?.confirmed) return { open: n > 0, label: 'Seat confirmed' };
   return {
     open: n > 0,
+    last: n === 1,
     label:
       n === 0 ? 'Fully booked' : n === 1 ? '1 seat left' : n + ' seats left',
   };
@@ -68,8 +65,18 @@ export default function Studio({ initial }) {
   const inFlight = useRef(false);
   const opener = useRef(null);
   const local = state.mode === 'demo';
-  const featured = programme[0];
-  const first = state.sessions.find((s) => s.slug === featured.slug);
+  const schedule = programme
+    .map((workshop) => {
+      const session = state.sessions.find(
+        (session) => session.slug === workshop.slug,
+      );
+      return {
+        workshop,
+        session,
+        startsAt: session ? Date.parse(session.starts_at) : Infinity,
+      };
+    })
+    .sort((a, b) => a.startsAt - b.startsAt);
   const confirmedTickets = Object.values(tickets)
     .filter((t) => t.confirmed)
     .sort((a, b) => Date.parse(a.starts_at) - Date.parse(b.starts_at));
@@ -224,35 +231,6 @@ export default function Studio({ initial }) {
     }
   }
 
-  const stateFor = (session) =>
-    availability(session, local, ticketFor(session));
-  const featuredState = stateFor(first);
-  const action = (session, workshopTitle) => {
-    const compact = Boolean(workshopTitle);
-    const owned = ticketFor(session);
-    const enabled = session && (compact || owned || stateFor(session).open);
-    return (
-      <button
-        className={compact ? 'row-action' : 'primary'}
-        disabled={!enabled}
-        onClick={() => choose(session)}
-        aria-label={compact ? 'View ' + workshopTitle : undefined}
-      >
-        {compact ? (
-          <Icon name="arrow" />
-        ) : (
-          <>
-            {owned?.confirmed
-              ? 'View your ticket'
-              : owned
-                ? 'Resume reservation'
-                : 'Reserve a seat'}
-            <Icon name="arrow" />
-          </>
-        )}
-      </button>
-    );
-  };
   function browseWorkshops() {
     close();
     document.getElementById('programme').scrollIntoView();
@@ -268,7 +246,11 @@ export default function Studio({ initial }) {
         ticketCount={confirmedTickets.length}
         onTickets={() => open('list')}
       />
-      <main className="wrap" id="top">
+      <main className="wrap">
+        <div className="programme-intro">
+          <h1>Workshop programme</h1>
+          <p>Small-group classes in paper, print and textiles.</p>
+        </div>
         {state.incompleteSetup && (
           <p className="notice" role="status">
             Browser demo. To share bookings, connect both the Supabase project
@@ -296,11 +278,6 @@ export default function Studio({ initial }) {
             )}
           </p>
         )}
-        <FeaturedWorkshop
-          featured={featured}
-          seatState={featuredState}
-          action={action(first)}
-        />
         <section
           id="programme"
           aria-labelledby="programme-title"
@@ -308,15 +285,8 @@ export default function Studio({ initial }) {
         >
           <div className="programme-heading">
             <h2 id="programme-title" tabIndex={-1}>
-              Workshop programme
+              Upcoming sessions
             </h2>
-            <span className="mode">
-              {local
-                ? 'Browser demo'
-                : state.mode === 'connected'
-                  ? 'Studio bookings'
-                  : 'Bookings unavailable'}
-            </span>
           </div>
           {state.mode === 'unavailable' && (
             <p role="status" className="notice">
@@ -324,32 +294,26 @@ export default function Studio({ initial }) {
               <a href="/">Reload programme</a>
             </p>
           )}
-          {programme.map((w) => {
-            const session = state.sessions.find((s) => s.slug === w.slug);
-            return (
-              <WorkshopRow
-                key={w.slug}
-                workshop={w}
+          <div className="workshops">
+            {schedule.map(({ workshop, session }) => (
+              <WorkshopCard
+                key={workshop.slug}
+                workshop={workshop}
                 session={session}
-                seatState={stateFor(session)}
-                action={action(session, w.title)}
+                seats={availability(session, local, ticketFor(session))}
+                ticket={ticketFor(session)}
                 onChoose={choose}
               />
-            );
-          })}
+            ))}
+          </div>
         </section>
+        {local && (
+          <p className="mode-note">
+            <Icon name="info" />
+            Demo reservations stay in this browser.
+          </p>
+        )}
       </main>
-      <footer className="wrap">
-        <span className="footer-brand">
-          <Mark />
-          Fieldwork Studio
-        </span>
-        <span>
-          {local
-            ? 'Demo reservations stay in this browser.'
-            : 'Workshop reservations'}
-        </span>
-      </footer>
       <BookingDialog
         {...{
           dialog,
@@ -367,7 +331,7 @@ export default function Studio({ initial }) {
           error,
           transact,
         }}
-        canConfirm={stateFor(active).open || Boolean(ticket)}
+        canConfirm={availability(active, local, ticket).open || Boolean(ticket)}
       />
     </>
   );

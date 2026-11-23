@@ -15,7 +15,7 @@ export function Icon({ name }) {
     close: 'm6 6 12 12M18 6 6 18',
     tick: 'm4 12 5 5L20 6',
     ticket: 'M3 6h18v4a2 2 0 0 0 0 4v4H3v-4a2 2 0 0 0 0-4Zm12 2v2m0 4v2',
-    clock: 'M12 2.8a9.2 9.2 0 1 1 0 18.4 9.2 9.2 0 1 1 0-18.4Zm0 4.7V12l3.5 2',
+    info: 'M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18Zm0 8v5m0-8h.01',
   };
   return (
     <svg
