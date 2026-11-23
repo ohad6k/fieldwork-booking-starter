@@ -10,16 +10,13 @@
     "build": "next build",
     "start": "next start",
     "test": "node --test",
-    "check": "npx -y viberaven check",
-    "check:race": "npx -y viberaven race --auto"
+    "check": "npx -y viberaven@1.13.0 check",
+    "check:race": "npx -y viberaven@1.13.0 race --auto"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.119.2",
     "next": "16.4.6",
     "react": "19.3.1",
     "react-dom": "19.3.1"
-  },
-  "devDependencies": {
-    "viberaven": "1.13.0"
   }
 }

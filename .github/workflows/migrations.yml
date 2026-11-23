@@ -20,6 +20,7 @@ jobs:
           persist-credentials: false
       - run: bash scripts/test-db.sh
   review:
+    if: ${{ vars.FIELDWORK_MIGRATION_REVIEW == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     continue-on-error: true
@@ -32,23 +33,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
-      - run: npm ci
       - name: Check the repository
         id: repository
         continue-on-error: true
-        run: npx -y viberaven check
+        run: npm run check
       - name: Check migration behavior
         run: |
           status=0
-          npx -y viberaven race --auto || status=$?
+          npm run check:race || status=$?
           case "$status" in
             0) outcome="Completed. Inspect the tested scope in the log." ;;
-            2) outcome="Incomplete. Read the coverage reason in the log." ;;
+            2) outcome="Incomplete. Read the coverage reason in the log. The pinned version infers no checks for the shipped schema." ;;
             *) outcome="Review required. Read the finding or error in the log." ;;
           esac
           echo "### VibeRaven migration review" >> "$GITHUB_STEP_SUMMARY"
           echo "Repository review: ${{ steps.repository.outcome }}" >> "$GITHUB_STEP_SUMMARY"
           echo "Migration review: $outcome (exit $status)" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$status" -eq 2 ]; then exit 0; fi
           if [ "$status" -ne 0 ]; then echo "::warning::$outcome"; fi
           exit "$status"

@@ -22,7 +22,7 @@ The pgTAP suite checks the last seat, a second request against a full session, c
 
 ## Read the recorded concurrency checks
 
-The video and JSON preserve results from separate database runs. A *tested order* is a sequence in which the engine let the operations from two requests proceed. Each of the two checks below exercised six orders. The historical example is available here as a recorded result. The runnable migration in this repository is the Fieldwork guard. [24-second walkthrough](booking-check.mp4) · [Selected output and revision hashes](booking-check.json)
+The video and JSON summarize recorded runs from an engineering build. The JSON retains selected results and source digests. Reproducing those exact schedules requires the engineering build and full input reports. To reproduce the Fieldwork database contract with the files in this starter, use the pgTAP command above. A *tested order* is a sequence in which the engine let operations from two requests proceed. Each of the two checks in the table exercised six orders. [24-second walkthrough](booking-check.mp4) · [Selected output and revision hashes](booking-check.json)
 
 | Database under test | What the recorded engine run found |
 | --- | --- |
@@ -31,8 +31,8 @@ The video and JSON preserve results from separate database runs. A *tested order
 | Corrected historical example | A separate revision locked the capacity row. Its two checks held across all six tested orders apiece. |
 | Shipped Fieldwork migration | Fieldwork uses a conditional update to claim the seat. An engineering build ran both checks against this migration. All six tested orders held for each. |
 
-## Read a migration pull request
+## Opt into migration review
 
-`npm run check` reviews the repository. `npm run check:race` asks the published VibeRaven CLI to infer checks from its migrations. Version 1.13.0 loaded this schema and returned **incomplete** with zero inferred checks. The engineering run above used the revision recorded under `shipped_guard.engine_git_revision`. A pull request can show the published review's result without blocking the build. [Commands and pinned version](../package.json) · [Workflow](../.github/workflows/migrations.yml)
+If you want an advisory review on migration pull requests, open your fork’s **Settings → Secrets and variables → Actions → Variables**. Set the repository variable `FIELDWORK_MIGRATION_REVIEW` to `true`. The job runs the same commands available locally, `npm run check` and `npm run check:race`, using the published VibeRaven CLI pinned in `package.json`. On the shipped migrations, version 1.13.0 loaded the schema and returned **incomplete** with zero inferred checks. The result is visible in the summary. The pgTAP job verifies the contract regardless of the advisory setting. [Commands and pinned version](../package.json) · [Workflow](../.github/workflows/migrations.yml)
 
 The engine revision identifies the VibeRaven build. The migration SHA-256 identifies the exact Fieldwork SQL tested.
