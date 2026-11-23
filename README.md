@@ -4,13 +4,13 @@ A ready-to-book programme for a paper, print or textile studio. Guests choose a 
 
 [Try the live demo](https://fieldwork-studio-gallery-w15.vercel.app) · [See the mobile ticket](docs/images/ticket-390.png)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fohad6k%2Ffieldwork-booking-starter&project-name=fieldwork-booking-starter&repository-name=fieldwork-booking-starter)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fohad6k%2Ffieldwork-booking-starter&project-name=fieldwork-booking-starter&repository-name=fieldwork-booking-starter&demo-title=Fieldwork%20Studio&demo-description=Browse%20workshops%2C%20book%20a%20seat%20and%20manage%20your%20ticket.&demo-url=https%3A%2F%2Ffieldwork-studio-gallery-w15.vercel.app&demo-image=https%3A%2F%2Fraw.githubusercontent.com%2Fohad6k%2Ffieldwork-booking-starter%2Fmain%2Fdocs%2Fimages%2Ftemplate-preview.png)
 
-![Fieldwork Studio’s workshop programme with three dated classes and their remaining seats](docs/images/programme-1440.png)
+![Fieldwork Studio’s workshop programme with three dated classes and their remaining seats](docs/images/template-preview.png)
 
 Next.js 16 App Router, React 19 and vanilla CSS. Guest booking uses browser storage by default. Supabase adds a transactional PostgreSQL seat guard.
 
-[Reservation screen](docs/images/reserve-1440.png) · [Mobile programme](docs/images/mobile-workshops.png)
+[Desktop programme](docs/images/programme-1440.png) · [Reservation screen](docs/images/reserve-1440.png) · [Mobile programme](docs/images/mobile-workshops.png)
 
 ## Book your first seat
 
