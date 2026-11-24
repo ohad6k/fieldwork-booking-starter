@@ -59,7 +59,9 @@ async function changeBooking(request, cancel) {
         ) {
           if (error.code === 'P0001')
             return errorResponse(
-              'Booking has closed for this session. Choose another workshop.',
+              error.hint === 'This workshop is full.'
+                ? 'This workshop is full. Choose another session.'
+                : 'Booking has closed for this session. Choose another workshop.',
               409,
             );
           throw new Error('Reservation failed');
