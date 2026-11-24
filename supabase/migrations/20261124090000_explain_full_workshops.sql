@@ -6,7 +6,8 @@ declare
 begin
   select reserved, capacity, starts_at into session
     from public.workshops
-    where slug = new.workshop_slug;
+    where slug = new.workshop_slug
+    for update;
   if not found or session.starts_at <= now()
       or (new.starts_at is not null and session.starts_at <> new.starts_at) then
     raise exception 'Booking closed' using hint = 'This session has started or moved.';
