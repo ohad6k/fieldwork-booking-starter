@@ -4,7 +4,7 @@ A ready-to-book programme for a paper, print or textile studio. Guests choose a 
 
 [Try the live demo](https://fieldwork-studio-gallery-w15.vercel.app) · [See the mobile ticket](docs/images/ticket-390.png)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fohad6k%2Ffieldwork-booking-starter&project-name=fieldwork-booking-starter&repository-name=fieldwork-booking-starter&demo-title=Fieldwork%20Studio&demo-description=Browse%20workshops%2C%20book%20a%20seat%20and%20manage%20your%20ticket.&demo-url=https%3A%2F%2Ffieldwork-studio-gallery-w15.vercel.app&demo-image=https%3A%2F%2Fraw.githubusercontent.com%2Fohad6k%2Ffieldwork-booking-starter%2Fmain%2Fdocs%2Fimages%2Ftemplate-preview.png)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fohad6k%2Ffieldwork-booking-starter&project-name=fieldwork-booking-starter&repository-name=fieldwork-booking-starter&demo-title=Fieldwork%20Studio&demo-description=Browse%20workshops%2C%20book%20a%20seat%20and%20manage%20your%20ticket.&demo-url=https%3A%2F%2Ffieldwork-studio-gallery-w15.vercel.app&demo-image=https%3A%2F%2Fraw.githubusercontent.com%2Fohad6k%2Ffieldwork-booking-starter%2Fmain%2Fdocs%2Fimages%2Ftemplate-preview.png) [![VibeRaven](https://github.com/ohad6k/fieldwork-booking-starter/actions/workflows/viberaven.yml/badge.svg?event=pull_request)](https://github.com/ohad6k/fieldwork-booking-starter/actions/workflows/viberaven.yml)
 
 ![Fieldwork Studio’s workshop programme with three dated classes and their remaining seats](docs/images/template-preview.png)
 
@@ -56,6 +56,8 @@ Run `npm run check` for formatting and SQL seed parity, `npm test` for schedule 
 ## Check before you launch
 
 Run `npx -y viberaven check` from the repository root. It reads the migrations and code on your machine, needs no account, and lists launch gaps such as RLS, Data API grants and undocumented environment variables. Re-run it after you change the schema or add a table.
+
+Pull requests run the same check in GitHub Actions ([workflow](.github/workflows/viberaven.yml)). It replays the migrations with two guests booking at once and fails the PR only when an order breaks the [last-seat rule](supabase/tests/last-seat.rule.json). The check run shows that order and a fix it has already retested. To add it to another repository, copy the workflow and `.github/actions/viberaven-check/`.
 
 ## License
 

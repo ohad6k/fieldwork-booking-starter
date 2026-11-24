@@ -1,0 +1,26 @@
+name: VibeRaven check
+description: Fail a pull request only when VibeRaven proves a two-request race in its SQL; give the order, a verified fix and an agent prompt.
+author: VibeRaven
+branding:
+  icon: shield
+  color: green
+inputs:
+  token:
+    description: Token used only to post the "VibeRaven race" check run. Never passed to the CLI.
+    default: ${{ github.token }}
+  check-name:
+    description: Name of the check run on the pull request.
+    default: VibeRaven race
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+      with:
+        node-version: 24
+        package-manager-cache: false
+    - name: Race the changed SQL with two requests
+      shell: bash
+      env:
+        VR_TOKEN: ${{ inputs.token }}
+        VR_CHECK_NAME: ${{ inputs.check-name }}
+      run: node "$GITHUB_ACTION_PATH/check.mjs"
